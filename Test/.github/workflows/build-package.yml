@@ -1,0 +1,43 @@
+name: Build a Package
+on:
+  workflow_dispatch:
+    inputs:
+      bazelBuildArgs:
+        type: string
+        description: A value for `--bazel_build_opts`
+        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
+      linuxBuildArgs:
+        type: string
+        required: false
+        description: Build options for Linux Build (skip if empty)
+      androidBuildArgs:
+        type: string
+        required: false
+        description: Build options for Android Build (skip if empty)
+      macosBuildArgs:
+        type: string
+        required: false
+        description: Build options for macOS Build (skip if empty)
+      iosBuildArgs:
+        type: string
+        required: false
+        description: Build options for iOS Build (skip if empty)
+      windowsBuildArgs:
+        type: string
+        required: false
+        description: Build options for Windows Build (skip if empty)
+  schedule:
+    - cron: 0 12 * * 0,3
+jobs:
+  package:
+    uses: ./.github/workflows/package.yml
+    with:
+      ref: ${{ github.event.ref }}
+      packageName: package
+      bazelBuildArgs: ${{ inputs.bazelBuildArgs }}
+      linuxBuildArgs: ${{ inputs.linuxBuildArgs }}
+      androidBuildArgs: ${{ inputs.androidBuildArgs }}
+      macosBuildArgs: ${{ inputs.macosBuildArgs }}
+      iosBuildArgs: ${{ inputs.iosBuildArgs }}
+      windowsBuildArgs: ${{ inputs.windowsBuildArgs }}
+    secrets: inherit
